@@ -35,4 +35,6 @@ extern void CPLXTO3PH(volatile float32 *a, volatile float32 *b,
 		volatile float32 *c, cfloat32 Z);
 extern cfloat32 POL2CPLX(float32 r, float32 fi);
 
+extern void CplxLowPass(volatile cfloat32 *Flt, cfloat32 Src, float32 TsPerT1);
+
 #endif /* COMPLEX_H_ */

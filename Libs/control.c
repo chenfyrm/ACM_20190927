@@ -4,23 +4,31 @@
  *  Created on: 2019-9-27
  *      Author: 700363
  */
+#include "math.h"
+
+#include "UserDefs.h"
+#include "UserMath.h"
+
+#include "control.h"
 
 /**/
+/*
 void PI_CONTROLLER(TYPE_PI_CONTROLLER *data) {
-	/* proportional term */
+	//proportional term
 	data->up = data->Kp * (data->Ref - data->Fbk);
 
-	/* integral term */
+	//integral term
 	data->ui =
 			(data->Out == data->v1) ?
 					(data->Ki * (data->Ref - data->Fbk) + data->i1) : data->i1;
 	data->i1 = data->ui;
 
-	/* control output */
+	//control output
 	data->v1 = data->up + data->ui;
 	data->Out = (data->v1 > data->Umax) ? data->Umax : data->v1;
 	data->Out = (data->Out < data->Umin) ? data->Umin : data->Out;
 }
+*/
 
 float32 Delay1(float32 In, volatile float32* PreIn) {
 	float32 v01;
@@ -39,10 +47,7 @@ void LowPass(volatile float32 *Flt, float32 Src, float32 TsPerT1) {
 	*Flt = (*Flt + Src * TsPerT1) / (1.0 + TsPerT1);
 }
 
-void CplxLowPass(volatile cfloat32 *Flt, cfloat32 Src, float32 TsPerT1) {
-	Flt->re = (Flt->re + Src.re * TsPerT1) / (1.0 + TsPerT1);
-	Flt->im = (Flt->im + Src.im * TsPerT1) / (1.0 + TsPerT1);
-}
+
 
 void RmsClc(volatile float32 *rms, float32 Src, Uint16 N,
 		volatile float32 *Square, volatile Uint16 *cnt) {
@@ -215,6 +220,7 @@ void SR(volatile Uint16* Q, Uint16 Set, Uint16 Reset) {
 /*
  *
  * */
+/*
 Uint16 DLYON_N(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data) {
 	Uint16 logic = FALSE;
 	if (In) {
@@ -231,8 +237,10 @@ Uint16 DLYON_N(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data) {
 
 	return logic;
 }
+*/
 
 /**/
+/*
 extern Uint16 DLYOFF_N(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data) {
 	Uint16 logic = TRUE;
 	if (!In) {
@@ -249,8 +257,10 @@ extern Uint16 DLYOFF_N(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data) {
 
 	return logic;
 }
+*/
 
 /**/
+/*
 Uint16 DLYON_T(Uint16 In, float32 T, volatile TYPE_DLYONOFF_T* data, float32 CT) {
 	Uint16 logic = FALSE;
 	if (In) {
@@ -267,8 +277,10 @@ Uint16 DLYON_T(Uint16 In, float32 T, volatile TYPE_DLYONOFF_T* data, float32 CT)
 
 	return logic;
 }
+*/
 
 /**/
+/*
 Uint16 DLYOFF_T(Uint16 In, float32 T, volatile TYPE_DLYONOFF_T* data,
 		float32 CT) {
 	Uint16 logic = TRUE;
@@ -287,8 +299,10 @@ Uint16 DLYOFF_T(Uint16 In, float32 T, volatile TYPE_DLYONOFF_T* data,
 	return logic;
 
 }
+*/
 
 /**/
+/*
 Uint16 MONO(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data) {
 	Uint16 logic = FALSE;
 //	if (RTRIG(In, &data->logic.bit.) || FTRIG(In, &data->logic)) {
@@ -301,3 +315,4 @@ Uint16 MONO(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data) {
 
 	return logic;
 }
+*/

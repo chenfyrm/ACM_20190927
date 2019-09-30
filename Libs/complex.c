@@ -4,6 +4,10 @@
  *  Created on: 2019-9-27
  *      Author: 700363
  */
+#include "math.h"
+#include "UserDefs.h"
+
+#include "complex.h"
 
 
 void CPLX2FRAC(volatile float32 *Re, volatile float32 *Im, cfloat32 Z) {
@@ -120,4 +124,9 @@ cfloat32 POL2CPLX(float32 r, float32 fi) {
 	Z.re = r * cos(fi);
 	Z.im = r * sin(fi);
 	return Z;
+}
+
+void CplxLowPass(volatile cfloat32 *Flt, cfloat32 Src, float32 TsPerT1) {
+	Flt->re = (Flt->re + Src.re * TsPerT1) / (1.0 + TsPerT1);
+	Flt->im = (Flt->im + Src.im * TsPerT1) / (1.0 + TsPerT1);
 }
