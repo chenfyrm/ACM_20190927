@@ -63,6 +63,7 @@ struct	SIPRDA{
 
 	/*state*/
 	float32 WX_Theta;
+	float32 XU_3PhSqu;
 
 	/*temp*/
 	cfloat32 XI_PhAB;
@@ -79,6 +80,8 @@ struct	SIPRDA{
 	float32	XF_U3Ph;
 	float32 WU_3PhAbs_Flt;
 
+	float32 XU_DcLk1Dy;
+
 	Uint16 B_IphA;
 	Uint16 B_IphB;
 	Uint16 B_IphC;
@@ -87,13 +90,18 @@ struct	SIPRDA{
 	float32	PT_3PhSmp;
 	float32	PN_IPhFixMcu_Flt;
 	float32 PD_ThetaFiOs;
-	float32 PN_UDcLk_Flt;
+	float32 PN_UDcLk1_Flt;
 	float32 PN_URef_Flt;
 	float32 PN_IPhActRct_Flt;
 	float32 PN_IPhActRctMcu_Flt;
 	float32 PN_IPhAbs_Flt;
 	float32 PN_PQ3PhMcu_Flt;
 	float32 PN_IPhDQ_Flt;
+	float32 PN_U3PhRms_Flt;
+
+	/*control*/
+	struct IIRFILTER_2ND U3PhRe;
+	struct IIRFILTER_2ND U3PhIm;
 
 	/*reserved*/
 	float32 XI_DfIn;
@@ -181,6 +189,21 @@ extern void ACCL_B(struct ACCLDA *p);
 //	/*parameter*/
 //	/*reserved*/
 //};
+
+/*
+ *
+ *
+ * */
+struct UFCODA{
+	float32 WX_Theta;
+	Uint16	B_EnBuiTs:1;
+	float32	WU_3Ph;
+	float32	PZ_3PhFiCa;
+	float32	PZ_3PhTf;
+	float32	PZ_3PhFiNd;
+
+
+};
 
 #ifdef __cplusplus
 }

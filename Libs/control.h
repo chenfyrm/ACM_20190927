@@ -8,6 +8,44 @@
 #ifndef CONTROL_H_
 #define CONTROL_H_
 
+struct IIRFILTER_2ND{
+	float32 In;				//input
+	float32 Out;			//output
+	float32 a1;				//param
+	float32 a2;
+	float32 b0;
+	float32 b1;
+	float32 b2;
+	float32 oldIn1;				//state
+	float32 oldIn2;
+	float32 oldOut1;
+	float32 oldOut2;
+} ;
+
+extern void IIRFilter_2nd(struct IIRFILTER_2ND *data);
+extern void AdaptIIRNotchFilter(struct IIRFILTER_2ND *data, float32 W0,
+		float32 Ts);
+
+//
+struct PI_CONTROLLER{
+	float32 Ref;   			// Input: reference set-point
+	float32 Fbk;   			// Input: feedback
+	float32 Out;   			// Output: controller output
+	float32 Kp;				// Parameter: proportional loop gain
+	float32 Ki;			    // Parameter: integral gain
+	float32 Umax;			// Parameter: upper saturation limit
+	float32 Umin;			// Parameter: lower saturation limit
+	float32 up;				// Data: proportional term
+	float32 ui;				// Data: integral term
+	float32 v1;				// Data: pre-saturated controller output
+	float32 i1;				// Data: integrator storage: ui(k-1)
+	float32 w1;				// Data: saturation record: [u(k-1) - v(k-1)]
+} ;
+
+extern void PI_CONTROLLER(struct PI_CONTROLLER *data);
+
+
+
 extern float32 Delay1(float32 In, volatile float32* PreIn);
 extern float32 DelayN(float32 In, volatile float32* PreInArr32, Uint16 N);
 extern void LowPass(volatile float32 *Flt, float32 Src, float32 TsPerT1);

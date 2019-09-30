@@ -12,8 +12,39 @@
 #include "control.h"
 
 /**/
-/*
-void PI_CONTROLLER(TYPE_PI_CONTROLLER *data) {
+void IIRFilter_2nd(struct IIRFILTER_2ND *data) {
+	data->Out = data->b0 * data->In + data->b1 * data->oldIn1
+			+ data->b2 * data->oldIn2 - data->a1 * data->oldOut1
+			- data->a2 * data->oldOut2;
+	/***********************************/
+	data->oldIn2 = data->oldIn1;
+	data->oldIn1 = data->In;
+	data->oldOut2 = data->oldOut1;
+	data->oldOut1 = data->Out;
+}
+
+/***************************
+ *
+ *
+ *
+ ****************************/
+void AdaptIIRNotchFilter(struct IIRFILTER_2ND *data, float32 W0, float32 Ts) {
+	data->b0 = 1.0;
+	data->b1 = -2.0 * cos(W0 * Ts);
+	data->b2 = 1.0;
+	data->a1 = (1 - W0 * Ts / 4) * data->b1;
+	data->a2 = pow((1 - W0 * Ts / 4), 2.0);
+	if ((data->b1 + 2.0) < 0.001) {
+		data->In *= 1.0;
+	} else {
+		data->In *= (1.0 + data->a1 + data->a2) / (2.0 + data->b1);
+	}
+	IIRFilter_2nd(data);
+}
+
+
+/**/
+void PI_CONTROLLER(struct PI_CONTROLLER *data) {
 	//proportional term
 	data->up = data->Kp * (data->Ref - data->Fbk);
 
@@ -28,7 +59,7 @@ void PI_CONTROLLER(TYPE_PI_CONTROLLER *data) {
 	data->Out = (data->v1 > data->Umax) ? data->Umax : data->v1;
 	data->Out = (data->Out < data->Umin) ? data->Umin : data->Out;
 }
-*/
+
 
 float32 Delay1(float32 In, volatile float32* PreIn) {
 	float32 v01;
