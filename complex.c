@@ -23,9 +23,9 @@ cfloat32 FRAC2CPLX(float32 Re, float32 Im) {
 }
 
 cfloat32 CPLXMOV(cfloat32 Z) {
-	cfloat32 Z1;
-	Z1.re = Z.re;
-	Z1.im = Z.im;
+	cfloat32 Z_eql;
+	Z_eql.re = Z.re;
+	Z_eql.im = Z.im;
 	return Z1;
 }
 
@@ -43,6 +43,7 @@ cfloat32 CPLXMULT(cfloat32 Z1, cfloat32 Z2) {
 	return Z;
 }
 
+/*未完成*/
 cfloat32 CPLXMULT_SHFT(cfloat32 Z1, cfloat32 Z2, int32 m) {
 	cfloat32 Z = { 0, 0 };
 	return Z;
@@ -52,21 +53,23 @@ float32 CPLXNORM(cfloat32 Z) {
 	return Z.re * Z.re + Z.im * Z.im;
 }
 
-cfloat32 CPLXSCA(cfloat32 Z1, float32 a) {
-	cfloat32 Z;
-	Z.re = Z1.re * a;
-	Z.im = Z1.im * a;
-	return Z;
+cfloat32 CPLXSCA(cfloat32 Z, float32 a) {
+	cfloat32 Z1;
+	Z1.re = Z.re * a;
+	Z1.im = Z.im * a;
+	return Z1;
 }
 
-cfloat32 CPLXSCA_SHFT(cfloat32 Z1, float32 a, int32 m) {
-	cfloat32 Z = { 0, 0 };
-	return Z;
+/*未完成*/
+cfloat32 CPLXSCA_SHFT(cfloat32 Z, float32 a, int32 m) {
+	cfloat32 Z1 = { 0, 0 };
+	return Z1;
 }
 
-cfloat32 CPLXSHFT(cfloat32 Z1, int32 m) {
-	cfloat32 Z = { 0, 0 };
-	return Z;
+/*未完成*/
+cfloat32 CPLXSHFT(cfloat32 Z, int32 m) {
+	cfloat32 Z1 = { 0, 0 };
+	return Z1;
 }
 
 cfloat32 CPLXSUB(cfloat32 Z1, cfloat32 Z2) {
@@ -83,16 +86,19 @@ cfloat32 CPLXADD(cfloat32 Z1, cfloat32 Z2) {
 	return Z;
 }
 
+/*未完成*/
 cfloat32 _PREVCPLX(cfloat32 Z) {
 
 	return Z;
 }
 
+/*未完成*/
 cfloat32 CPLXDIVSCA(cfloat32 Z1, float32 F, int32 m) {
 	cfloat32 Z = { 0, 0 };
 	return Z;
 }
 
+/*未完成*/
 cfloat32 CPLXDIV(cfloat32 Z1, cfloat32 Z2) {
 	cfloat32 Z;
 	Z.re = (Z1.re * Z2.re + Z1.im * Z2.im) / (Z2.re * Z2.re + Z2.im * Z2.im);
