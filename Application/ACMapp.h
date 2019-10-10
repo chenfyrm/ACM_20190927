@@ -8,8 +8,5 @@
 #ifndef ACMAPP_H_
 #define ACMAPP_H_
 
-#include "UserDefs.h"
-#include "complex.h"
-#include "control.h"
 
 #endif /* ACMAPP_H_ */

@@ -5,7 +5,6 @@
 extern "C" {
 #endif
 
-
 /*STRUCTDEFS*/
 struct Dsp_Data {
 	//--------------------------------------------//
@@ -24,14 +23,11 @@ struct Dsp_Data {
 
 	/*MEMSDA*/
 	//测量比例
-
 	/*POCPDA*/
 	//保护
 
-
 	/*CALIDA*/
 	//校准
-
 
 	/*SIPRDA*/
 	//滤波
@@ -123,7 +119,6 @@ struct Dsp_Data {
 	Uint16 XX_Mode;
 	Uint16 L_DsPlElm3PhMod; //TRUE
 
-
 	/*SRTODA*/
 	Uint16 B_EnCv;
 	Uint16 A_CvOp;
@@ -157,7 +152,6 @@ struct Dsp_Data {
 
 	/*HSTIDA*/
 //	float32
-
 	/*FPGIDA*/
 
 	//----------------------------------//
@@ -372,71 +366,70 @@ struct Dsp_Data {
 	//
 	//-------------------------------------------//
 	float32 PN_IPhFixMcu_Flt;
-		float32 PN_U3PhRms_Flt;
-		float32 PN_UDcLk_Flt;
-		float32 PN_URef_Flt;
-		float32 PN_IPhActRct_Flt;
-		float32 PN_IPhActRctMcu_Flt;
-		float32 PN_IPhAbs_Flt;
-		float32 PN_PQ3PhMcu_Flt;
-		float32 PN_IPhDQ_Flt;
-		float32 PN_URefIPhClTrs_Flt;
-		float32 PN_IPhRms_Flt;
+	float32 PN_U3PhRms_Flt;
+	float32 PN_UDcLk_Flt;
+	float32 PN_URef_Flt;
+	float32 PN_IPhActRct_Flt;
+	float32 PN_IPhActRctMcu_Flt;
+	float32 PN_IPhAbs_Flt;
+	float32 PN_PQ3PhMcu_Flt;
+	float32 PN_IPhDQ_Flt;
+	float32 PN_URefIPhClTrs_Flt;
+	float32 PN_IPhRms_Flt;
 
-		float32 PD_ThetaFiOs; //1.047
+	float32 PD_ThetaFiOs; //1.047
 
-		float32 PU_PhClTrsMax; //	75
-		float32 PI_PhClTrsAbsLim; //	600
+	float32 PU_PhClTrsMax; //	75
+	float32 PI_PhClTrsAbsLim; //	600
 
-		float32 PF_IRQBMax; //Dsp外部中断最大频率，计算最小间隔时间，计数单步时间
+	float32 PF_IRQBMax; //Dsp外部中断最大频率，计算最小间隔时间，计数单步时间
 
-		float32 PX_DdCmpFa;
-		float32 PI_DdCmpFu;
-		float32 PI_DdCmpDs;
+	float32 PX_DdCmpFa;
+	float32 PI_DdCmpFu;
+	float32 PI_DdCmpDs;
 
-		float32 PX_3PhClRtHgh;
-		float32 PX_3PhClRtLow;
+	float32 PX_3PhClRtHgh;
+	float32 PX_3PhClRtLow;
 
-		/**/
-		float32 PZ_3PhFiNdRe; //	0,078 滤波电感电阻
-		float32 PZ_3PhFiNdIm; //	0,207滤波电感电抗
-		float32 PZ_3PhFiCaIm; //	-5,47 滤波电容电抗折算到一次侧
-		float32 PZ_3PhTfRe; //	0
-		float32 PZ_3PhTfIm; //	0
-		cfloat32 PZ_3PhFiNd;
-		cfloat32 PZ_3PhFiCa;
-		cfloat32 PZ_3PhTf;
+	/**/
+	float32 PZ_3PhFiNdRe; //	0,078 滤波电感电阻
+	float32 PZ_3PhFiNdIm; //	0,207滤波电感电抗
+	float32 PZ_3PhFiCaIm; //	-5,47 滤波电容电抗折算到一次侧
+	float32 PZ_3PhTfRe; //		0
+	float32 PZ_3PhTfIm; //		0
+	cfloat32 PZ_3PhFiNd;
+	cfloat32 PZ_3PhFiCa;
+	cfloat32 PZ_3PhTf;
 
-		Uint16 L_UDcLkStbEn; //	TRUE
-		float32 PN_UDcLkStbSliSmt; //	2200
-		float32 PN_UDcLkStbHevSmt; //	13,5
-		float32 PU_DcLkStbMaxMin; //	100
-		float32 PX_KpUDcLkStb;
-		float32 PX_KpUDcLkVoStbFb;
+	Uint16 L_UDcLkStbEn; //	TRUE
+	float32 PN_UDcLkStbSliSmt; //	2200
+	float32 PN_UDcLkStbHevSmt; //	13,5
+	float32 PU_DcLkStbMaxMin; //	100
+	float32 PX_KpUDcLkStb;
+	float32 PX_KpUDcLkVoStbFb;
 
-		float32 PX_3PhRndMax; //	0,0345
-		Uint16 L_3PhRndEn; //	TRUE
-		float32 PF_3PhSg; //1350
+	float32 PX_3PhRndMax; //	0,0345
+	Uint16 L_3PhRndEn; //	TRUE
+	float32 PF_3PhSg; //1350
 
-		Uint16 L_EnTPrDdCmp;
-		Uint16 L_DsPlElm3PhMod;
+	Uint16 L_EnTPrDdCmp;
+//		Uint16 L_DsPlElm3PhMod;
 
-		//DUVP
-		float32 PARTDP_PU_DcLkMin; //	1000
+	//DUVP
+	float32 PARTDP_PU_DcLkMin; //	1000
 
-		//DOVP
-		float32 PARTDP_PU_DcLkHgh4; //	1950
+	//DOVP
+	float32 PARTDP_PU_DcLkHgh4; //	1950
 
-		//MEMS
-		float32 PX_U3PhMmSvMax;	//0,9
-		float32 L_U3PhRmsPlySv;	//TRUE
-		float32 PU_U3PhRmsPlySvLim;	//35	V
-		float32 PT_U3PhRmsPlySvDy;	//1	s
+	//MEMS
+	float32 PX_U3PhMmSvMax;	//0,9
+	float32 L_U3PhRmsPlySv;	//TRUE
+	float32 PU_U3PhRmsPlySvLim;	//35	V
+	float32 PT_U3PhRmsPlySvDy;	//1	s
 
-		//ACCL
-		Uint16 L_EnIPhClRms;	//	FALSE
-		float32 PI_PhClRmsLim;	//	800	A
-
+	//ACCL
+	Uint16 L_EnIPhClRms;	//	FALSE
+	float32 PI_PhClRmsLim;	//	800	A
 
 	//--------------------------------------------//
 	//
@@ -479,7 +472,7 @@ struct Dsp_Data {
 	float32 PX_FRefRmpDo1;
 	float32 PX_FRefRmpDo2;
 	float32 PX_FRefRmpDo3;
-	float32 PF_FRefRmpDo12;
+	float32 PF_FRefRmpDo12;//
 	float32 PF_FRefRmpDo23;
 
 	/*FrefUDcLk*/
@@ -496,7 +489,7 @@ struct Dsp_Data {
 
 	/*UF3PhCmp*/
 	Uint16 L_EnUF3PhCmp;
-	float32 PI_UF3PhCmpActHiLo;	//param
+	float32 PI_UF3PhCmpActHiLo;
 	float32 PF_UF3PhCmpActHiLo;
 	float32 PI_UF3PhCmpRctHiLo;
 	float32 PU_UF3PhCmpRctHiLo;
@@ -551,13 +544,8 @@ struct Dsp_Data {
 	Uint16 L_PrlAcm;	//	TRUE
 
 	/*DCDS*/
-//	PARTAP_PU_DhDcLk_Max	100	V
-//	PARTAP_PT_DcLkDhDy	600	ms
-//	PARTAP_PT_FrOvp	500	ms
-//	PARTAP_L_EnDhDcLkCvSl	TRUE
-//	PARTAP_PU_DcLkCvSlDh	1000	V
-};
 
+};
 
 /**/
 extern volatile struct Dsp_Data DspData;
@@ -567,12 +555,7 @@ extern volatile struct Dsp_Data DspData;
 //逆变
 extern void DspInit(void);
 
-extern void DspTask_185us(void);	//同步锁相
 
-extern void DspTask_B(void);
-extern void DspTask_C(void);
-extern void DspTask_T2(void);
-extern void DspTask_T3(void);
 
 #ifdef __cplusplus
 }

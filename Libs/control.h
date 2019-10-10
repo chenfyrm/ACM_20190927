@@ -24,8 +24,8 @@ struct IIRFILTER_2ND{
 	float32 oldOut2;
 } ;
 
-extern void IIRFilter_2nd(struct IIRFILTER_2ND *data);
-extern void AdaptIIRNotchFilter(struct IIRFILTER_2ND *data, float32 W0,
+void IIRFilter_2nd(struct IIRFILTER_2ND *data);
+void AdaptIIRNotchFilter(struct IIRFILTER_2ND *data, float32 W0,
 		float32 Ts);
 
 //
@@ -44,20 +44,25 @@ struct PI_CONTROLLER{
 	float32 w1;				// Data: saturation record: [u(k-1) - v(k-1)]
 } ;
 
-extern void PI_CONTROLLER(struct PI_CONTROLLER *data);
+void PI_CONTROLLER(struct PI_CONTROLLER *data);
+
+float32 OvMd(float32 M1);
+void SVPWM(volatile float32 *DutyA, volatile float32 *DutyB,
+		volatile float32 *DutyC, float32 _3PhAl, float32 _3PhBe );
 
 
-extern float32 Delay1(float32 In, volatile float32* PreIn);
-extern float32 DelayN(float32 In, volatile float32* PreInArr32, Uint16 N);
-extern void LowPass(volatile float32 *Flt, float32 Src, float32 TsPerT1);
 
-extern void RmsClc(volatile float32 *rms, float32 Src, Uint16 N,
+float32 Delay1(float32 In, volatile float32* PreIn);
+float32 DelayN(float32 In, volatile float32* PreInArr32, Uint16 N);
+void LowPass(volatile float32 *Flt, float32 Src, float32 TsPerT1);
+
+void RmsClc(volatile float32 *rms, float32 Src, Uint16 N,
 		volatile float32 *Square, volatile Uint16 *cnt);
-extern void RAMP2(volatile float32 *Y, float32 X, float32 Dr, float32 Df,
+void RAMP2(volatile float32 *Y, float32 X, float32 Dr, float32 Df,
 		float32 Init, Uint16 Set, Uint16 Hold);
-extern void RAMP(volatile float32 *Y, float32 X, float32 TsPerTr,
+void RAMP(volatile float32 *Y, float32 X, float32 TsPerTr,
 		float32 TsPerTf, float32 Init, Uint16 Set, Uint16 Hold, float32 Max);
-extern float32 Cycle(void);
+float32 Cycle(void);
 extern void INTEGR(volatile float32 *Y, float32 X, float32 T, float32 Init,
 		float32 Max, float32 Min, Uint16 Set, Uint16 Hold);
 extern float32 FKG4(float32 X, float32 X1, float32 Y1, float32 X2, float32 Y2,
@@ -97,13 +102,13 @@ typedef struct DLYONOFF_T {
 	0,\
 	0.0,\
 }
-//extern Uint16 DLYON_N(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data);
-//extern Uint16 DLYOFF_N(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data);
-//extern Uint16 DLYON_T(Uint16 In, float32 T, volatile TYPE_DLYONOFF_T* data,
-//		float32 CT);
-//extern Uint16 DLYOFF_T(Uint16 In, float32 T, volatile TYPE_DLYONOFF_T* data,
-//		float32 CT);
-//extern Uint16 MONO(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data);
+extern Uint16 DLYON_N(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data);
+extern Uint16 DLYOFF_N(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data);
+extern Uint16 DLYON_T(Uint16 In, float32 T, volatile TYPE_DLYONOFF_T* data,
+		float32 CT);
+extern Uint16 DLYOFF_T(Uint16 In, float32 T, volatile TYPE_DLYONOFF_T* data,
+		float32 CT);
+extern Uint16 MONO(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data);
 
 typedef struct {
 	float32 phase;	//input

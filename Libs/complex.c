@@ -26,7 +26,7 @@ cfloat32 CPLXMOV(cfloat32 Z) {
 	cfloat32 Z_eql;
 	Z_eql.re = Z.re;
 	Z_eql.im = Z.im;
-	return Z1;
+	return Z_eql;
 }
 
 cfloat32 CPLXCONJ(cfloat32 Z) {

@@ -60,6 +60,55 @@ void PI_CONTROLLER(struct PI_CONTROLLER *data) {
 	data->Out = (data->Out < data->Umin) ? data->Umin : data->Out;
 }
 
+/*
+ * 过调制
+ * */
+float32 OvMd(float32 M1) {
+
+	//[0 1/sqrt(3) 0.579 0.6038 0.6057]
+	//[0 1/sqrt(3) 0.58  0.6389 0.6667]
+
+	float32 M;
+
+	if (M1 < 0)
+		M = 0;
+	else if (M1 < ONEbySQRT3)
+		M = M1;
+	else if (M1 < 0.579)
+		M = ONEbySQRT3
+				+ (0.58 - ONEbySQRT3) / (0.579 - ONEbySQRT3)
+						* (M1 - ONEbySQRT3);
+	else if (M1 < 0.6038)
+		M = 0.58 + (0.6389 - 0.58) / (0.6038 - 0.579) * (M1 - 0.579);
+	else if (M1 < 0.6057)
+		M = 0.6389 + (0.6667 - 0.6389) / (0.6057 - 0.6038) * (M1 - 0.6038);
+	else
+		M = 0.6667;
+
+	return M;
+}
+
+/*
+ * 空间电压矢量调节
+ * */
+void SVPWM(volatile float32 *DutyA, volatile float32 *DutyB,
+		volatile float32 *DutyC, float32 _3PhAl, float32 _3PhBe) {
+	float32 a, b, c, min, max, NrmFa, Cml;
+
+	a = _3PhAl;
+	b = -_3PhAl * 0.5 + _3PhBe * SQRT3byTWO;
+	c = -_3PhAl * 0.5 - _3PhBe * SQRT3byTWO;
+
+	min = Min(a, Min(b, c));
+	max = Max(a, Max(b, c));
+
+	NrmFa = Max(1.0, max - min);
+	Cml = (max + min) * (-0.5);
+
+	*DutyA = (a + Cml) / NrmFa + 0.5;
+	*DutyB = (b + Cml) / NrmFa + 0.5;
+	*DutyC = (c + Cml) / NrmFa + 0.5;
+}
 
 float32 Delay1(float32 In, volatile float32* PreIn) {
 	float32 v01;
@@ -251,7 +300,7 @@ void SR(volatile Uint16* Q, Uint16 Set, Uint16 Reset) {
 /*
  *
  * */
-/*
+
 Uint16 DLYON_N(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data) {
 	Uint16 logic = FALSE;
 	if (In) {
@@ -268,10 +317,10 @@ Uint16 DLYON_N(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data) {
 
 	return logic;
 }
-*/
+
 
 /**/
-/*
+
 extern Uint16 DLYOFF_N(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data) {
 	Uint16 logic = TRUE;
 	if (!In) {
@@ -288,10 +337,10 @@ extern Uint16 DLYOFF_N(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data) {
 
 	return logic;
 }
-*/
+
 
 /**/
-/*
+
 Uint16 DLYON_T(Uint16 In, float32 T, volatile TYPE_DLYONOFF_T* data, float32 CT) {
 	Uint16 logic = FALSE;
 	if (In) {
@@ -308,10 +357,10 @@ Uint16 DLYON_T(Uint16 In, float32 T, volatile TYPE_DLYONOFF_T* data, float32 CT)
 
 	return logic;
 }
-*/
+
 
 /**/
-/*
+
 Uint16 DLYOFF_T(Uint16 In, float32 T, volatile TYPE_DLYONOFF_T* data,
 		float32 CT) {
 	Uint16 logic = TRUE;
@@ -330,7 +379,7 @@ Uint16 DLYOFF_T(Uint16 In, float32 T, volatile TYPE_DLYONOFF_T* data,
 	return logic;
 
 }
-*/
+
 
 /**/
 /*
