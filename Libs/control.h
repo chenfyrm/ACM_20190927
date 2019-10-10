@@ -8,6 +8,8 @@
 #ifndef CONTROL_H_
 #define CONTROL_H_
 
+
+
 struct IIRFILTER_2ND{
 	float32 In;				//input
 	float32 Out;			//output
@@ -45,7 +47,6 @@ struct PI_CONTROLLER{
 extern void PI_CONTROLLER(struct PI_CONTROLLER *data);
 
 
-
 extern float32 Delay1(float32 In, volatile float32* PreIn);
 extern float32 DelayN(float32 In, volatile float32* PreInArr32, Uint16 N);
 extern void LowPass(volatile float32 *Flt, float32 Src, float32 TsPerT1);
@@ -69,14 +70,85 @@ extern Uint16 FTRIG(Uint16 In, volatile Uint16* PreIn);
 extern void RS(volatile Uint16* Q, Uint16 Set, Uint16 Reset);
 extern void SR(volatile Uint16* Q, Uint16 Set, Uint16 Reset);
 
-/*
-extern Uint16 DLYON_N(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data);
-extern Uint16 DLYOFF_N(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data);
-extern Uint16 DLYON_T(Uint16 In, float32 T, volatile TYPE_DLYONOFF_T* data,
-		float32 CT);
-extern Uint16 DLYOFF_T(Uint16 In, float32 T, volatile TYPE_DLYONOFF_T* data,
-		float32 CT);
-extern Uint16 MONO(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data);
-*/
+struct LOGICAL_BITS {
+	Uint16 Logic :1;
+	Uint16 PreLogic :1;
+	Uint16 RTrig :1;
+	Uint16 FTrig :1;
+	Uint16 rsvd1 :12;
+};
+
+union LOGICAL {
+	Uint16 all;
+	struct LOGICAL_BITS bit;
+};
+
+typedef struct DLYONOFF_N {
+	union LOGICAL logic;
+	Uint16 Cnt;
+} TYPE_DLYONOFF_N;
+
+typedef struct DLYONOFF_T {
+	Uint16 PreIn;
+	float32 Tm;
+} TYPE_DLYONOFF_T;
+
+#define DLYONOFF_DEFAULTS {\
+	0,\
+	0.0,\
+}
+//extern Uint16 DLYON_N(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data);
+//extern Uint16 DLYOFF_N(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data);
+//extern Uint16 DLYON_T(Uint16 In, float32 T, volatile TYPE_DLYONOFF_T* data,
+//		float32 CT);
+//extern Uint16 DLYOFF_T(Uint16 In, float32 T, volatile TYPE_DLYONOFF_T* data,
+//		float32 CT);
+//extern Uint16 MONO(Uint16 In, Uint16 N, volatile TYPE_DLYONOFF_N* data);
+
+typedef struct {
+	float32 phase;	//input
+	float32 alpha;	//output
+	float32 beta;
+	float32 Ts;	//param
+	float32 w0;
+	float32 K;
+	float32 Ki;
+	float32 oldPhase1;	//state
+	float32 oldPhase2;
+	float32 oldAlpha1;
+	float32 oldAlpha2;
+	float32 oldBeta1;
+	float32 oldBeta2;
+	float32 a;	//local
+	float32 b;
+	float32 w;
+	float32 peak;
+	float32 ErrF;
+	float32 ComW;
+} TYPE_SOGIOSGMA;
+
+#define SOGIOSGMA_DEFAULTS {\
+	0.0,\
+	0.0,\
+	0.0,\
+	1.0/1350.0/2.0,\
+	100*3.1415926,\
+	1.4142135,\
+	10000,\
+	0.0,\
+	0.0,\
+	0.0,\
+	0.0,\
+	0.0,\
+	0.0,\
+	0.0,\
+	0.0,\
+	100*3.1415926,\
+	0.0,\
+	0.0,\
+	0.0\
+	}
+
+extern void SOGIOSGFLL(TYPE_SOGIOSGMA *interface);
 
 #endif /* CONTROL_H_ */

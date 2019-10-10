@@ -8,6 +8,10 @@
 #ifndef COMPLEX_H_
 #define COMPLEX_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
 	float32 re;
 	float32 im;
@@ -36,5 +40,9 @@ extern void CPLXTO3PH(volatile float32 *a, volatile float32 *b,
 extern cfloat32 POL2CPLX(float32 r, float32 fi);
 
 extern void CplxLowPass(volatile cfloat32 *Flt, cfloat32 Src, float32 TsPerT1);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* COMPLEX_H_ */
