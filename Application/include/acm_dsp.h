@@ -14,15 +14,10 @@ struct Dsp_Data {
 	/*ANINDA&CSIVDA*/
 	//采样输入、仿真输入
 	float32 XU_DcLk; //input
-//	float32 XI_DcLk;
 	float32 XI_PhA; //A相电流瞬时值
 	float32 XI_PhB;
 	float32 XI_PhC;
-//	float32 XU_PhA;//A相电压瞬时值
-//	float32 XU_PhB;
-//	float32 XU_PhC;
 	float32 XU_PhABLk; //AB线电压互感器值
-//	float32 XU_PhBCLk;
 	float32 XU_Bt;
 	float32 XI_Bt;
 	float32 XI_BtCg;
@@ -49,7 +44,8 @@ struct Dsp_Data {
 	float32 XQ_3Ph;
 	float32 WX_Theta;
 	float32 XF_U3Ph;/*Frequency of measured 3-phase output load voltage*/
-	float32 XU_DcLk_Flt;
+	float32	XU_BtFlt;
+	float32 XU_DcLk1Flt;
 	float32 WU_3PhAbs_Flt;
 	float32 XI_PhAct_Flt;
 	float32 XI_PhRct_Flt;
@@ -115,6 +111,7 @@ struct Dsp_Data {
 
 	/*SRTODA*/
 	Uint16 B_EnCv;
+	Uint16 S_Opto;
 	Uint16 A_CvOp;
 
 	/**/
@@ -194,6 +191,10 @@ struct Dsp_Data {
 	float32 WI_PhActDsp;
 	float32 WI_PhRctDsp;
 
+	float32 XX_IPhClTrsKpActDsp;
+	float32 XX_IPhClTrsKpRctDsp;
+	float32 XX_IPhClTrsKpAbsDsp;
+
 	/*CvOpSaSq*/
 	Uint16 NX_SqStCvOpSa;
 	Uint16 C_Ck3PhGduFb;
@@ -222,6 +223,7 @@ struct Dsp_Data {
 
 	/*BtCpURef*/
 	float32 WU_BtDsp;
+
 
 	//--------------------------------------------//
 	//
@@ -362,6 +364,9 @@ struct Dsp_Data {
 	float32 PU_UF3PhCmpRctHiLo;
 
 	/*IPhClPsTrs*/
+	float32 PX_IPhClTrsKpAct;	//	0,005
+	float32 PX_IPhClTrsKpRct;	//	0,03
+	float32 PX_IPhClTrsKpAbs;	//	0
 
 	/*CvOpSaSq*/
 	float32 PU_3PhIdlCmp;
@@ -378,7 +383,7 @@ extern volatile struct Dsp_Data DspData;
 /*DSP*/
 /*IRQB*/
 //逆变
-extern void DspInit(void);
+void DspInit(void);
 
 #ifdef __cplusplus
 }

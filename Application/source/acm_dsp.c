@@ -61,6 +61,8 @@ void DdCmp(void);
 /**/
 void DspInit(void) {
 
+
+
 	if (SIMULATION) {
 	} else {
 		Uint16 i;
@@ -133,9 +135,9 @@ void DspInit(void) {
 
 	DspData.XX_PwmPdVv = floor(1.0 / 1350.0 / 2.0 * DspData.PF_IRQBMax);
 	DspData.XT_Tsc = DspData.XX_PwmPdVv / DspData.PF_IRQBMax; //开关频率1350Hz，波峰波谷双采样
-	DspData.XX_DutyA = 0.5;
-	DspData.XX_DutyB = 0.5;
-	DspData.XX_DutyC = 0.5;
+	DspData.XX_DutyA = 0;
+	DspData.XX_DutyB = 0;
+	DspData.XX_DutyC = 0;
 	DspData.XX_Mode = 0;
 
 	//-------------------//
@@ -175,15 +177,11 @@ void DspInit(void) {
 	DspData.PU_U3PhRef3 = 380.0 * SQRT2bySQRT3;  //50Hz 相电压峰值
 	DspData.PU_U3PhRef4 = 380.0 * SQRT2bySQRT3; //100Hz
 	DspData.L_ExtU3PhRef = FALSE;
-	DspData.PX_ExtU3PhRefRmp = 200.0;
 	DspData.L_EnRmpU3PhRef = FALSE;
-	DspData.PX_U3PhRefRmp1 = 200.0;
-	DspData.PX_U3PhRefRmp2 = 50.0;
-	DspData.PX_U3PhRefRmpSel = 0.9;
+
 
 	/*U3PhCl 4ms*/
-	DspData.L_En3PhCl = TRUE; //TRUE
-	DspData.L_EnU3PhOpLoCl = FALSE;
+
 	DspData.PX_KpU3PhCl = 0.8;
 	DspData.PT_U3PhCl = 50.0; //ms
 	DspData.PU_3PhClMax = 75.0;
@@ -193,7 +191,7 @@ void DspInit(void) {
 	DspData.PX_TrfRtPr3Ph = 1.684;
 
 	/*TFrefRmp 16ms*/
-	DspData.PX_FRefRmpUpSlaveAcm = 100.0;
+
 	if (SIMULATION) {
 		DspData.PX_FRefRmpUp = 400.0;
 		DspData.PX_FRefRmpDo1 = 400.0;
@@ -269,11 +267,11 @@ void SRTO_C(void) {
 		DspData.B_EnCv = FALSE;
 	}
 
-//	if (EnCv) {
-//		DspData.A_CvOp = TRUE;
-//	} else {
-//		DspData.A_CvOp = FALSE;
-//	}
+	if (DspData.S_Opto) {
+		DspData.A_CvOp = TRUE;
+	} else {
+		DspData.A_CvOp = FALSE;
+	}
 }
 
 //复数运算
@@ -339,7 +337,7 @@ void SIPR_B(void) {
 	DspData.XU_3PhRms = sqrt(DspData.XU_3PhSqu);
 
 	/**/
-	LowPass(&DspData.XU_DcLk_Flt, DspData.XU_DcLk,
+	LowPass(&DspData.XU_DcLk1Flt, DspData.XU_DcLk,
 			DspData.XT_Tsc * DspData.PN_UDcLk_Flt);
 	LowPass(&DspData.WU_3PhAbs_Flt, DspData.WU_3PhAbs,
 			DspData.XT_Tsc * DspData.PN_URef_Flt);
@@ -521,8 +519,6 @@ void PPG3_B(void) {
 	} else {
 
 	}
-	/**/
-	DspData.XX_PwmPdVv = DspData.XT_Tsc * DspData.PF_IRQBMax + 0.5;
 
 	/*
 	 * 最小脉宽限制
@@ -535,10 +531,10 @@ void PPG3_B(void) {
 			DspData.PX_3PhClRtHgh);
 
 	if (!DspData.A_CvOp) {
-		DspData.XX_Mode = 2;
-		DspData.XX_DutyA = 0.5;
-		DspData.XX_DutyB = 0.5;
-		DspData.XX_DutyC = 0.5;
+		DspData.XX_Mode = 0;
+		DspData.XX_DutyA = 0;
+		DspData.XX_DutyB = 0;
+		DspData.XX_DutyC = 0;
 	} else {
 
 	}
@@ -548,82 +544,6 @@ void PPG3_B(void) {
  * 死区补偿
  * */
 void DdCmp(void) {
-	/*
-	 * 电流小于零时从上管续流，下管为可控管，电压增加
-	 * 电流大于零时从下管续流，上管为可控管，电压减小
-	 * ***************/
-	if (DspData.XX_Mode) {
-		float32 coff;
-		if (DspData.XI_PhA <= 0) {
-
-			if (fabs(DspData.XI_PhA) < 10.0)
-				coff = 0.0;
-			else if (fabs(DspData.XI_PhA) < 50.0)
-				coff = (fabs(DspData.XI_PhA) - 10.0) / 40.0;
-			else
-				coff = 1.0;
-
-			DspData.XX_CrU -= 0.00001 / DspData.XT_Tsc * coff;
-		}
-		if (DspData.XI_PhB <= 0) {
-
-			if (fabs(DspData.XI_PhB) < 10.0)
-				coff = 0.0;
-			else if (fabs(DspData.XI_PhB) < 50.0)
-				coff = (fabs(DspData.XI_PhB) - 10.0) / 40.0;
-			else
-				coff = 1.0;
-
-			DspData.XX_CrV -= 0.00001 / DspData.XT_Tsc * coff;
-		}
-		if (DspData.XI_PhC <= 0) {
-
-			if (fabs(DspData.XI_PhC) < 10.0)
-				coff = 0.0;
-			else if (fabs(DspData.XI_PhC) < 50.0)
-				coff = (fabs(DspData.XI_PhC) - 10.0) / 40.0;
-			else
-				coff = 1.0;
-
-			DspData.XX_CrW -= 0.00001 / DspData.XT_Tsc * coff;
-		}
-
-	} else {
-		float32 coff;
-		if (DspData.XI_PhA >= 0) {
-
-			if (fabs(DspData.XI_PhA) < 10.0)
-				coff = 0.0;
-			else if (fabs(DspData.XI_PhA) < 50.0)
-				coff = (fabs(DspData.XI_PhA) - 10.0) / 40.0;
-			else
-				coff = 1.0;
-
-			DspData.XX_CrU += 0.00001 / DspData.XT_Tsc * coff;
-		}
-		if (DspData.XI_PhB >= 0) {
-
-			if (fabs(DspData.XI_PhB) < 10.0)
-				coff = 0.0;
-			else if (fabs(DspData.XI_PhB) < 50.0)
-				coff = (fabs(DspData.XI_PhB) - 10.0) / 40.0;
-			else
-				coff = 1.0;
-
-			DspData.XX_CrV += 0.00001 / DspData.XT_Tsc * coff;
-		}
-		if (DspData.XI_PhC >= 0) {
-
-			if (fabs(DspData.XI_PhC) < 10.0)
-				coff = 0.0;
-			else if (fabs(DspData.XI_PhC) < 50.0)
-				coff = (fabs(DspData.XI_PhC) - 10.0) / 40.0;
-			else
-				coff = 1.0;
-
-			DspData.XX_CrW += 0.00001 / DspData.XT_Tsc * coff;
-		}
-	}
 
 }
 
@@ -687,7 +607,7 @@ void FrefRmp(void) {
 
 /*16ms*/
 void FrefUDcLk(void) {
-	LowPass(&DspData.XU_DcLkFlt2, DspData.XU_DcLkFlt,
+	LowPass(&DspData.XU_DcLkFlt2, DspData.XU_DcLk1Flt,
 			16.0 / DspData.PT_FRefUDcLk);
 	float32 v01;
 	v01 = FKG4(DspData.XU_DcLkFlt2, 0.0, DspData.PF_3PhMin,
