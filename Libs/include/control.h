@@ -24,6 +24,20 @@ struct IIRFILTER_2ND{
 	float32 oldOut2;
 } ;
 
+#define IIRFILTER_2ND_DEFAULTS {		\
+	0.0, 		\
+	0.0, 		\
+	0.0, 		\
+	0.0,	\
+	0.0,	\
+	0.0,	\
+	0.0, 	\
+	0.0,	\
+	0.0, 	\
+	0.0,	\
+	0.0,	\
+	}
+
 void IIRFilter_2nd(struct IIRFILTER_2ND *data);
 void AdaptIIRNotchFilter(struct IIRFILTER_2ND *data, float32 W0,
 		float32 Ts);
@@ -43,6 +57,21 @@ struct PI_CONTROLLER{
 	float32 i1;				// Data: integrator storage: ui(k-1)
 	float32 w1;				// Data: saturation record: [u(k-1) - v(k-1)]
 } ;
+
+#define PI_CONTROLLER_DEFAULTS {		\
+	0.0, 		\
+	0.0, 		\
+	0.0, 		\
+	1.0,	\
+	0.0,	\
+	1.0,	\
+	-1.0, 	\
+	0.0,	\
+	0.0, 	\
+	0.0,	\
+	0.0,	\
+	1.0 	\
+	}
 
 void PI_CONTROLLER(struct PI_CONTROLLER *data);
 

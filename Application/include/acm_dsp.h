@@ -33,18 +33,18 @@ struct Dsp_Data {
 	float32 XU_3PhRe;/*3-phase output load voltage, phase-phase, real part*/
 	float32 XU_3PhIm;/*3-phase output load voltage, phase-phase, imaginary part*/
 	float32 XU_3PhAbs;/*3-phase output load voltage, phase-phase, peak value*/
-	float32 XU_3PhSqu;
 	float32 XU_3PhRms;/*3-phase output load voltage, phase-phase, RMS value*/
-	cfloat32 XI_PhAB;
-	cfloat32 XI_PhDQ;
 	float32 XI_PhAbs;
 	float32 XI_PhAct;
 	float32 XI_PhRct;
 	float32 XP_3Ph;
 	float32 XQ_3Ph;
 	float32 WX_Theta;
-	float32 XF_U3Ph;/*Frequency of measured 3-phase output load voltage*/
+	float32 XT_U3Ph;/*Period of measured 3-phase output load voltage*/
 	float32	XU_BtFlt;
+	float32 XI_BtFlt;
+	float32 XI_BtCgFlt;
+	float32 XI_BtCg2Flt;
 	float32 XU_DcLk1Flt;
 	float32 WU_3PhAbs_Flt;
 	float32 XI_PhAct_Flt;
@@ -54,7 +54,7 @@ struct Dsp_Data {
 	float32 XI_PhAbs_Flt;
 	float32 XP_3Ph_Flt;
 	float32 XQ_3Ph_Flt;
-	cfloat32 XI_PhDQ_Flt;
+
 
 	/*ACCLDA*/
 	//µçÁ÷ÏÞ·ù
@@ -63,12 +63,6 @@ struct Dsp_Data {
 	float32 WU_IPhClTrs_Flt;
 	Uint16 B_LimAct;
 	float32 WU_IPhClRms;
-	float32 XI_Ph1Squ;
-	float32 XI_Ph2Squ;
-	float32 XI_Ph3Squ;
-	Uint16 XX_CntPh1Rms;
-	Uint16 XX_CntPh2Rms;
-	Uint16 XX_CntPh3Rms;
 	float32 XI_Ph1Rms;
 	float32 XI_Ph2Rms;
 	float32 XI_Ph3Rms;
@@ -78,12 +72,7 @@ struct Dsp_Data {
 
 	/*UFCODA*/
 	Uint16 S_3PhOvMd;
-	cfloat32 WU_3PhSec;
-	cfloat32 XZ_3PhFiNd;
-	cfloat32 XZ_3PhFiCa;
-	cfloat32 XZ_3PhTf;
-	cfloat32 WU_3PhPm;
-	cfloat32 WU_3PhPmAB;
+	Uint16 S_UDcLkLow;
 	float32 WX_ThetaCv;
 	float32 XU_DcLkStbFltSli;
 	float32 XU_DcLkStbFltHev;
@@ -94,20 +83,18 @@ struct Dsp_Data {
 	float32 WU_3PhAbsOvMd;
 	float32 WU_IPhClRmsRed;
 	float32 WU_3PhAbs;
-	cfloat32 WU_3PhAB;
 	float32 XX_CrU;
 	float32 XX_CrV;
 	float32 XX_CrW;
-	Uint16 S_UDcLkLow;
 
 	/*PPG3*/
+
 	float32 XT_Tsc;
-	Uint16 XX_PwmPdVv;
 	float32 XX_DutyA; //output
 	float32 XX_DutyB;
 	float32 XX_DutyC;
 	Uint16 XX_Mode;
-	Uint16 L_DsPlElm3PhMod; //TRUE
+
 
 	/*SRTODA*/
 	Uint16 B_EnCv;
@@ -115,29 +102,25 @@ struct Dsp_Data {
 	Uint16 A_CvOp;
 
 	/**/
-	float32 XP_Ovp;/*OVP power*/
-	float32 XH_Ovp_Est;/*Estimated OVP temperature*/
+
 
 	/*ACLS*/
 	Uint16 B_IPhClTmWnd1Fl;
 	Uint16 B_IPhClRmsTmFl;
 
 	/*OVPT*/
+	Uint16 A_OvpAv;
+	Uint16 S_OvpEn;
 	Uint16 C_OvpFcTs;
 	Uint16 A_OvpFcTsOk;
+	float32 XP_Ovp;/*OVP power*/
+	float32 XH_Ovp_Est;/*Estimated OVP temperature*/
 	float32 XX_Duty4;
 
 	/*BTCP*/
 	Uint16 A_BtCpAv;
-	Uint16 A_OvpAv;
-	Uint16 S_OvpEn;
 	float32 XX_Duty5;
 
-	/**/
-	Uint16 B_DspOvLdFl;
-	Uint16 S_DspWdAlm;
-	Uint16 S_DspFpgaComFl;
-	Uint16 B_DspStkSvFl;
 
 	//----------------------------------//
 	//
@@ -190,7 +173,6 @@ struct Dsp_Data {
 	/*IPhClPsTrs 4ms*/
 	float32 WI_PhActDsp;
 	float32 WI_PhRctDsp;
-
 	float32 XX_IPhClTrsKpActDsp;
 	float32 XX_IPhClTrsKpRctDsp;
 	float32 XX_IPhClTrsKpAbsDsp;
@@ -266,15 +248,14 @@ struct Dsp_Data {
 	float32 PN_UDcLkStbSliSmt; //	2200
 	float32 PN_UDcLkStbHevSmt; //	13,5
 	float32 PU_DcLkStbMaxMin; //	100
-	float32 PX_KpUDcLkStb;
-	float32 PX_KpUDcLkVoStbFb;
+	float32 PX_KpUDcLkStb;//150
 
 	float32 PX_3PhRndMax; //	0,0345
 	Uint16 L_3PhRndEn; //	TRUE
 	float32 PF_3PhSg; //1350
 
 	Uint16 L_EnTPrDdCmp;
-//		Uint16 L_DsPlElm3PhMod;
+	Uint16 L_DsPlElm3PhMod; //TRUE
 
 	//DUVP
 	float32 PARTDP_PU_DcLkMin; //	1000

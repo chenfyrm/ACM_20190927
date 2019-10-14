@@ -32,10 +32,11 @@ void AdaptIIRNotchFilter(struct IIRFILTER_2ND *data, float32 W0, float32 Ts) {
 	data->b0 = 1.0;
 	data->b1 = -2.0 * cos(W0 * Ts);
 	data->b2 = 1.0;
-	data->a1 = (1 - W0 * Ts / 4) * data->b1;
+//	data->a1 = (1 - W0 * Ts / 4) * data->b1;
+	data->a1 = -2+ W0 * Ts / 2;
 	data->a2 = pow((1 - W0 * Ts / 4), 2.0);
-	if ((data->b1 + 2.0) < 0.001) {
-		data->In *= 1.0;
+	if ((data->b1 + 2.0) < 0.0001) {
+		data->In *= (1.0 + data->a1 + data->a2)*10000;
 	} else {
 		data->In *= (1.0 + data->a1 + data->a2) / (2.0 + data->b1);
 	}
