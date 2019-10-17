@@ -98,7 +98,7 @@ extern float32 FKG4(float32 X, float32 X1, float32 Y1, float32 X2, float32 Y2,
 		float32 X3, float32 Y3, float32 X4, float32 Y4);
 extern void PIREG(float32 Ref, float32 Fbk, float32 Kp, float32 TsPerT1,
 		float32 Init, Uint16 Set, Uint16 Reset, float32 Max, float32 Min,
-		volatile float32 *Y, volatile Uint16 *Yi);
+		volatile float32 *Y, volatile float32 *Yi);
 extern Uint16 RTRIG(Uint16 In, volatile Uint16* PreIn);
 extern Uint16 FTRIG(Uint16 In, volatile Uint16* PreIn);
 extern void RS(volatile Uint16* Q, Uint16 Set, Uint16 Reset);

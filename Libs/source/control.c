@@ -216,7 +216,7 @@ void INTEGR(volatile float32 *Y, float32 X, float32 TsPerT1, float32 Init,
 
 void PIREG(float32 Ref, float32 Fbk, float32 Kp, float32 TsPerT1, float32 Init,
 		Uint16 Set, Uint16 Reset, float32 Max, float32 Min, volatile float32 *Y,
-		volatile Uint16 *Yi) {
+		volatile float32 *Yi) {
 	float32 Err, Yp, Out;
 	Err = Ref - Fbk;
 	Yp = Kp * Err;
