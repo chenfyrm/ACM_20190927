@@ -247,7 +247,7 @@ void DspInit(void) {
 	DspData.L_PrlAcm = TRUE;
 
 	/*UF3PhCmp 4ms*/
-	DspData.L_EnUF3PhCmp = TRUE;	//TRUE
+	DspData.L_EnUF3PhCmp = FALSE;	//TRUE
 	DspData.PI_UF3PhCmpActHiLo = 4000.0;
 	DspData.PF_UF3PhCmpActHiLo = -10.0;
 	DspData.PI_UF3PhCmpRctHiLo = 4000.0;
@@ -303,13 +303,14 @@ void DspInit(void) {
 
 	/*F3PhSz 16ms*/
 	DspData.PX_KpF3PhSzCl = 0.5;	//0.5
-	DspData.PT_F3PhSzCl = 160.0; //800ms
+	DspData.PT_F3PhSzCl = 800.0; //800ms
 	DspData.PF_UF3PhSzClMaxMin = 50.0;
 	DspData.PT_UF3PhSzRmp = 1000.0; //ms
 
 	/*U3PhSz 16ms*/
 	DspData.PU_UF3PhSzClAdd = 0.0; //同步幅值补偿
 	DspData.PU_UF3PhSzClMaxMin = 100.0;
+	DspData.PT_U3PhSzCl = 200.0;
 
 	/*UF3PhSz 16ms*/
 	DspData.PF_UF3PhSzRdy = 0.3;
@@ -517,7 +518,7 @@ static cfloat32 WU_3PhPmAB = {0,0};
 
 void UFCO_B(void) {
 
-	WU_3PhSec = POL2CPLX(DspData.WU_3PhDsp, 0.0); //静止坐标系按1次侧，同步频率按WF_3PhDsp  DQ
+	WU_3PhSec = POL2CPLX(DspData.WU_3PhDsp, -DspData.PD_ThetaFiOs); //静止坐标系按1次侧，同步频率按WF_3PhDsp  DQ
 
 	cfloat32 Z1, Z2;
 	Z1 = CPLXDIV(XZ_3PhFiCa,
@@ -615,7 +616,8 @@ void PPG3_B(void) {
 	 *
 	 * */
 	if (!DspData.L_3PhRndEn) {
-		DspData.XT_Tsc = 0.5 / DspData.PF_3PhSg; //开关频率1350Hz，波峰波谷双采样
+//		DspData.XT_Tsc = 0.5 / DspData.PF_3PhSg; //开关频率1350Hz，波峰波谷双采样
+		DspData.XT_Tsc = 0.00037; //开关频率1350Hz，波峰波谷双采样
 	} else {
 
 	}
@@ -805,7 +807,7 @@ void F3PhSz(void) {
 	static Uint16 ftrig1 = 0;
 	static Uint16 rtrig1 = 0;
 	static float32 Init = 0.0;
-	static Uint16 Yi = 0;
+	static float32 Yi = 0;
 
 	float32 value;
 	Uint16 rtrig1Q, Set;
@@ -816,7 +818,7 @@ void F3PhSz(void) {
 
 	if (rtrig1Q) {
 //		value = Limit(DspData.XF_U3Ph - DspData.PF_3PhNom, -5.0, 5.0); //开始同步
-		value = 5.0;
+		value = -0.5;
 	} else {
 		value = DspData.WF_UF3PhSz; //同步过程中
 	}
@@ -866,7 +868,7 @@ void U3PhSz(void) {
 		value = 0.0; //正在同步
 	} else {
 		if (rtrig1Q) {
-			value = DspData.WU_UF3PhSzErr; //开始同步
+			value = DspData.WU_UF3PhSzErr/ DspData.PX_TrfRtPr3Ph; //开始同步
 		} else {
 			value = DspData.WU_UF3PhSz; //同步过程中
 		}
@@ -878,6 +880,8 @@ void U3PhSz(void) {
 	INTEGR(&DspData.WU_UF3PhSz, DspData.WU_UF3PhSzErr,
 			16.0 / DspData.PT_U3PhSzCl, Init, DspData.PU_UF3PhSzClMaxMin,
 			-DspData.PU_UF3PhSzClMaxMin, Set, FALSE);
+
+//	DspData.WU_UF3PhSz = 0.0;
 
 	v01 = (fabs(DspData.WU_UF3PhSz) < 0.001);
 
