@@ -64,9 +64,9 @@ void DdCmp(void);
  *
  *
  * */
-static cfloat32 XZ_3PhFiNd = {0,0};
-static cfloat32 XZ_3PhFiCa = {0,0};
-static cfloat32 XZ_3PhTf = {0,0};
+static cfloat32 XZ_3PhFiNd = { 0, 0 };
+static cfloat32 XZ_3PhFiCa = { 0, 0 };
+static cfloat32 XZ_3PhTf = { 0, 0 };
 
 void DspInit(void) {
 
@@ -187,7 +187,6 @@ void DspInit(void) {
 	DspData.XX_IPhClTrsKpRctDsp = 0.0;
 	DspData.XX_IPhClTrsKpAbsDsp = 0.0;
 
-
 	/*
 	 *
 	 *
@@ -207,7 +206,7 @@ void DspInit(void) {
 	DspData.PU_PhClTrsMax = 75.0; //	75
 	DspData.PI_PhClTrsAbsLim = 600.0; //	600
 
-	DspData.PD_ThetaFiOs = PI / 3.0 - PI / 180.0;
+	DspData.PD_ThetaFiOs = PI / 3.0;
 
 	DspData.PZ_3PhFiNdRe = 0.078; //	0,078 滤波电感电阻
 	DspData.PZ_3PhFiNdIm = 0.207; //	0,207滤波电感电抗
@@ -357,10 +356,11 @@ void SRTO_C(void) {
  * 复数运算
  *
  * */
+static float32 WX_Theta32 = 0.0;
 static float32 XU_3PhSqu = 0.0;
 static cfloat32 XS_3Ph = { 0, 0 };
 static cfloat32 XI_PhAB = { 0, 0 };
-static cfloat32 WU_3PhAB = {0,0};
+static cfloat32 WU_3PhAB = { 0, 0 };
 static cfloat32 XI_PhDQ = { 0, 0 };
 static cfloat32 XI_PhDQ_Flt = { 0, 0 };
 static struct IIRFILTER_2ND U3PhRe = IIRFILTER_2ND_DEFAULTS;
@@ -404,7 +404,10 @@ void SIPR_B(void) {
 	DspData.XU_3PhIm = U3PhIm.Out;
 
 	DspData.WX_Theta += 2.0 * PI * DspData.WF_3PhDsp * DspData.XT_Tsc;
-	DspData.WX_Theta = fmod(DspData.WX_Theta, 2 * PI);
+//	WX_Theta32 += DspData.WF_3PhDsp * DspData.XT_Tsc * 4294967296.0;
+//	DspData.WX_Theta = WX_Theta32 * 1.46291807926716e-9;
+
+//	DspData.WX_Theta = fmod(DspData.WX_Theta, 2 * PI);
 
 	/*XF_U3Ph*/
 	if (!DspData.A_CvOp) {
@@ -477,19 +480,16 @@ void ACCL_B(void) {
  * 稳态电流限幅
  * */
 static float32 XI_Ph1Squ = 0.0;
-static float32 XI_Ph2Squ= 0.0;
-static float32 XI_Ph3Squ= 0.0;
-static Uint16 XX_CntPh1Rms=0;
-static Uint16 XX_CntPh2Rms=0;
-static Uint16 XX_CntPh3Rms=0;
+static float32 XI_Ph2Squ = 0.0;
+static float32 XI_Ph3Squ = 0.0;
+static Uint16 XX_CntPh1Rms = 0;
+static Uint16 XX_CntPh2Rms = 0;
+static Uint16 XX_CntPh3Rms = 0;
 
 void ACCL_T2(void) {
-	RmsClc(&DspData.XI_Ph1Rms, DspData.XI_PhA, 50, &XI_Ph1Squ,
-			&XX_CntPh1Rms);
-	RmsClc(&DspData.XI_Ph2Rms, DspData.XI_PhB, 50, &XI_Ph2Squ,
-			&XX_CntPh2Rms);
-	RmsClc(&DspData.XI_Ph3Rms, DspData.XI_PhC, 50, &XI_Ph3Squ,
-			&XX_CntPh3Rms);
+	RmsClc(&DspData.XI_Ph1Rms, DspData.XI_PhA, 50, &XI_Ph1Squ, &XX_CntPh1Rms);
+	RmsClc(&DspData.XI_Ph2Rms, DspData.XI_PhB, 50, &XI_Ph2Squ, &XX_CntPh2Rms);
+	RmsClc(&DspData.XI_Ph3Rms, DspData.XI_PhC, 50, &XI_Ph3Squ, &XX_CntPh3Rms);
 
 	LowPass(&DspData.XI_Ph1Rms_Flt, DspData.XI_Ph1Rms,
 			0.001 * DspData.PN_IPhRms_Flt);
@@ -511,23 +511,20 @@ void ACCL_T2(void) {
  * 电压频率控制
  * */
 
-static cfloat32 WU_3PhSec = {0,0};
-static cfloat32 WU_3PhPm = {0,0};
-static cfloat32 WU_3PhPmAB = {0,0};
-
+static cfloat32 WU_3PhSec = { 0, 0 };
+static cfloat32 WU_3PhPm = { 0, 0 };
+static cfloat32 WU_3PhPmAB = { 0, 0 };
 
 void UFCO_B(void) {
 
 	WU_3PhSec = POL2CPLX(DspData.WU_3PhDsp, -DspData.PD_ThetaFiOs); //静止坐标系按1次侧，同步频率按WF_3PhDsp  DQ
 
 	cfloat32 Z1, Z2;
-	Z1 = CPLXDIV(XZ_3PhFiCa,
-			CPLXADD(XZ_3PhFiCa, XZ_3PhTf));
+	Z1 = CPLXDIV(XZ_3PhFiCa, CPLXADD(XZ_3PhFiCa, XZ_3PhTf));
 	Z2 = CPLXADD(XZ_3PhFiNd, CPLXMULT(XZ_3PhTf, Z1));
 
 	/**/
-	WU_3PhPm = CPLXADD(CPLXMULT(WU_3PhSec, Z1),
-			CPLXMULT(XI_PhDQ_Flt, Z2));
+	WU_3PhPm = CPLXADD(CPLXMULT(WU_3PhSec, Z1), CPLXMULT(XI_PhDQ_Flt, Z2));
 	//B_EnBuiTs
 //	DspData.WU_3PhPm = DspData.WU_3PhSec;	//DQ
 
@@ -535,8 +532,7 @@ void UFCO_B(void) {
 	 * ipark变换
 	 *
 	 * */
-	WU_3PhPmAB = CPLXMULT(WU_3PhPm,
-			POL2CPLX(1.0, DspData.WX_Theta)); //ipark
+	WU_3PhPmAB = CPLXMULT(WU_3PhPm, POL2CPLX(1.0, DspData.WX_Theta)); //ipark
 	/*
 	 * 电流直流分量控制
 	 * WU_IPhDcClRe WU_IPhDcClIm
@@ -585,8 +581,7 @@ void UFCO_B(void) {
 
 	//
 	SVPWM(&DspData.XX_CrU, &DspData.XX_CrV, &DspData.XX_CrW,
-			WU_3PhAB.re / DspData.XU_DcLk,
-			WU_3PhAB.im / DspData.XU_DcLk);
+			WU_3PhAB.re / DspData.XU_DcLk, WU_3PhAB.im / DspData.XU_DcLk);
 
 	DspData.XX_Mode = !DspData.XX_Mode;
 
@@ -807,18 +802,21 @@ void F3PhSz(void) {
 	static Uint16 ftrig1 = 0;
 	static Uint16 rtrig1 = 0;
 	static float32 Init = 0.0;
-	static float32 Yi = 0;
+	static float32 Yi = 0.0;
 
 	float32 value;
-	Uint16 rtrig1Q, Set;
+	Uint16 rtrig1Q, ftrig1Q, Set;
+
+	rtrig1Q = RTRIG(DspData.C_AuSz, &rtrig1);
+	ftrig1Q = FTRIG(DspData.C_AuSz, &ftrig1);
 
 	SR(&sr1, DspData.C_AuSz, v01);
-	RS(&rs1, FTRIG(DspData.C_AuSz, &ftrig1), v01);
-	rtrig1Q = RTRIG(DspData.C_AuSz, &rtrig1);
+	RS(&rs1, ftrig1Q, v01);
 
 	if (rtrig1Q) {
 //		value = Limit(DspData.XF_U3Ph - DspData.PF_3PhNom, -5.0, 5.0); //开始同步
-		value = -0.5;
+		value = 0.3;
+
 	} else {
 		value = DspData.WF_UF3PhSz; //同步过程中
 	}
@@ -829,15 +827,26 @@ void F3PhSz(void) {
 	Set = rtrig1Q || rs1;
 
 	DspData.WF_UF3PhSzErr = Limit(
-			atan2(DspData.XU_3PhIm, Max(1.0, DspData.XU_3PhRe)), -PI / 2.0,
+			atan(DspData.XU_3PhIm / Max(DspData.XU_3PhRe,1.0)), -PI / 2.0,
 			PI / 2.0);
 
 	PIREG(0.0, DspData.WF_UF3PhSzErr, DspData.PX_KpF3PhSzCl,
-			16.0 / DspData.PT_F3PhSzCl, Init, Set, !sr1,
+			16.0 / DspData.PT_F3PhSzCl, 0.0, FALSE, !sr1,
 			DspData.PF_UF3PhSzClMaxMin, -DspData.PF_UF3PhSzClMaxMin,
 			&DspData.WF_UF3PhSz, &Yi);
 
 	v01 = (fabs(DspData.WF_UF3PhSz) < 0.005);
+
+	/**/
+	DspData.C_AuSzR = rtrig1Q;
+	DspData.C_AuSzF = ftrig1Q;
+	DspData.ZeroOut = v01;
+	DspData.Set = Set;
+	DspData.Reset = !sr1;
+	DspData.FadeOut = !rs1;
+	DspData.Init = Init;
+	DspData.Interger = Yi;
+
 }
 
 /*
@@ -868,7 +877,7 @@ void U3PhSz(void) {
 		value = 0.0; //正在同步
 	} else {
 		if (rtrig1Q) {
-			value = DspData.WU_UF3PhSzErr/ DspData.PX_TrfRtPr3Ph; //开始同步
+			value = DspData.WU_UF3PhSzErr/DspData.PX_TrfRtPr3Ph; //开始同步
 		} else {
 			value = DspData.WU_UF3PhSz; //同步过程中
 		}
@@ -881,7 +890,9 @@ void U3PhSz(void) {
 			16.0 / DspData.PT_U3PhSzCl, Init, DspData.PU_UF3PhSzClMaxMin,
 			-DspData.PU_UF3PhSzClMaxMin, Set, FALSE);
 
+
 //	DspData.WU_UF3PhSz = 0.0;
+
 
 	v01 = (fabs(DspData.WU_UF3PhSz) < 0.001);
 

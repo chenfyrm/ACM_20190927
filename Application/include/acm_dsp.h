@@ -5,7 +5,21 @@
 extern "C" {
 #endif
 
-/*STRUCTDEFS*/
+#ifndef DSP28_DATA_TYPES
+#define DSP28_DATA_TYPES
+typedef int                int16;
+typedef long               int32;
+typedef long long          int64;
+typedef unsigned int       Uint16;
+typedef unsigned long      Uint32;
+typedef unsigned long long Uint64;
+typedef float              float32;
+typedef long double        float64;
+#endif
+
+/*
+ * STRUCTDEFS
+ * */
 struct Dsp_Data {
 	//--------------------------------------------//
 	//
@@ -55,12 +69,12 @@ struct Dsp_Data {
 	float32 XP_3Ph_Flt;
 	float32 XQ_3Ph_Flt;
 
-
 	/*ACCLDA*/
 	//电流限幅
 	Uint16 S_IPhClTrsAv;
 	float32 WU_IPhClTrs;/*3-phase output load voltage reference manipulation,transient phase current control*/
 	float32 WU_IPhClTrs_Flt;
+
 	Uint16 B_LimAct;
 	float32 WU_IPhClRms;
 	float32 XI_Ph1Rms;
@@ -88,21 +102,16 @@ struct Dsp_Data {
 	float32 XX_CrW;
 
 	/*PPG3*/
-
 	float32 XT_Tsc;
 	float32 XX_DutyA; //output
 	float32 XX_DutyB;
 	float32 XX_DutyC;
 	Uint16 XX_Mode;
 
-
 	/*SRTODA*/
 	Uint16 B_EnCv;
 	Uint16 S_Opto;
 	Uint16 A_CvOp;
-
-	/**/
-
 
 	/*ACLS*/
 	Uint16 B_IPhClTmWnd1Fl;
@@ -356,15 +365,89 @@ struct Dsp_Data {
 	/*CvOpSa*/
 	Uint16 L_PrlAcm;	//	TRUE
 
-};
 
-/**/
+	/**/
+	Uint16 C_AuSzR;
+	Uint16 C_AuSzF;
+	Uint16 ZeroOut;
+	Uint16 Set;
+	Uint16 Reset;
+	Uint16 FadeOut;
+	float32	Init;
+	float32	Interger;
+}DspDate;
+
+/*
+ *
+ * */
 extern volatile struct Dsp_Data DspData;
 
-/*DSP*/
-/*IRQB*/
-//逆变
-void DspInit(void);
+
+//以下原DSP任务
+/*
+ *
+ * */
+extern void DspInit(void);
+
+/*
+ * IRQB 370us
+ * */
+extern void SIPR_B(void);
+extern void ACCL_B(void);
+extern void UFCO_B(void);
+extern void PPG3_B(void);
+
+/*
+ * IRQC 200us
+ * */
+extern void SRTO_C(void);
+
+/*
+ * T2 1ms
+ * */
+void HSTI_T2(void);
+void MEMS_T2(void);
+void ACCL_T2(void);
+void ACLS_T2(void);
+void OVPT_T2(void);
+void OROP_T2(void);
+void POCP_T2(void);
+void AICS_T2(void);
+void HSTO_T2(void);
+
+/*
+ * T3 100ms
+ * */
+void HSTP_T3(void);
+
+
+//以下原MCU任务
+/*
+ * A_Cl1 4ms
+ * */
+extern void IPhClPsTrs(void);
+extern void IPhClGenOvLd(void);
+extern void UF3PhCmp(void);
+
+extern void F3PhRef(void);
+extern void U3PhRef(void);
+
+extern void U3PhCl(void);
+
+
+
+/*
+ * A_Cl2 16ms
+ * */
+extern void TFrefRmp(void);
+extern void FrefRmp(void);
+
+extern void FrefUDcLk(void);
+
+extern void F3PhSz(void);
+extern void U3PhSz(void);
+extern void UF3PhSz(void);
+
 
 #ifdef __cplusplus
 }
